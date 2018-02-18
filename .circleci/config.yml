@@ -27,3 +27,14 @@ jobs:
           key: v1-dependencies-{{ checksum "project.clj" }}
 
       - run: lein test
+
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - run:
+          name: Build Docker image
+          command: |
+              docker build -t magthe/ci-test-clj:${CIRCLE_BRANCH} .
+              docker tag magthe/ci-test-clj:${CIRCLE_BRANCH} magthe/ci-test-clj:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}
+              docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWD}
+              docker push magthe/ci-test-clj
