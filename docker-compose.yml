@@ -5,3 +5,15 @@ services:
     command: java -jar ./target/ci-test-clj-0.1.0-SNAPSHOT-standalone.jar
     ports:
       - "3001:3000"
+
+  server-circleci:
+    image: magthe/ci-test-clj:master
+    command: java -jar ./target/ci-test-clj-0.1.0-SNAPSHOT-standalone.jar
+    ports:
+      - "3002:3000"
+
+  server-wercker:
+    image: magthe/ci-test-clj:w-master
+    command: java -jar /pipeline/source/target/ci-test-clj-0.1.0-SNAPSHOT-standalone.jar
+    ports:
+      - "3003:3000"
