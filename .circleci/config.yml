@@ -1,15 +1,19 @@
 # based on the example YAML
-version: 2
-jobs:
-  build:
+version: 2.1
+
+executors:
+  clj-docker:
     docker:
-      - image: circleci/clojure:lein-2.8.1
-
-    working_directory: ~/repo
-
+      - image: circleci/clojure:lein-2.9.1
     environment:
       LEIN_ROOT: "true"
       JVM_OPTS: -Xmx3200m
+
+
+jobs:
+  setup:
+    executor: clj-docker
+    working_directory: ~/repo
 
     steps:
       - checkout
@@ -26,7 +30,53 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "project.clj" }}
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./*
+
+  test:
+    executor: clj-docker
+    working_directory: ~/work
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "project.clj" }}
+          - v1-dependencies-
+
       - run: lein test
+
+  cloverage:
+    executor: clj-docker
+    working_directory: ~/work
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "project.clj" }}
+          - v1-dependencies-
+
+      - run: lein cloverage
+
+  build:
+    executor: clj-docker
+    working_directory: ~/repo
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "project.clj" }}
+          - v1-dependencies-
 
       - setup_remote_docker:
           docker_layer_caching: true
@@ -38,3 +88,20 @@ jobs:
               docker tag magthe/ci-test-clj:${CIRCLE_BRANCH} magthe/ci-test-clj:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}
               docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWD}
               docker push magthe/ci-test-clj
+
+workflows:
+  version: 2
+
+  tests_and_build:
+    jobs:
+      - setup
+      - test:
+          requires:
+            - setup
+      - cloverage:
+          requires:
+            - setup
+      - build:
+          requires:
+            - test
+            - cloverage
