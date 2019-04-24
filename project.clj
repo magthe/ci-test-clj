@@ -7,11 +7,8 @@
                  [ring/ring-jetty-adapter "1.7.1"]
                  [com.stuartsierra/component "0.4.0"]
                  [camel-snake-kebab "0.4.0"]
-                 ;; [ring/ring-core "1.6.3"]
                  [ring/ring-json "0.5.0-beta1"]
-                 [com.stuartsierra/component "0.4.0"]
-
-                 ]
+                 [com.stuartsierra/component "0.4.0"]]
   :main ^:skip-aot play.core
 
   :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]
