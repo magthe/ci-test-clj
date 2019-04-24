@@ -1,4 +1,4 @@
-FROM clojure:lein-2.7.1
+FROM clojure:lein-2.9.1
 
 WORKDIR /app
 COPY project.clj project.clj
