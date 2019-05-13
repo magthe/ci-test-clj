@@ -20,8 +20,7 @@ jobs:
 
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "project.clj" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "project.clj" }}
 
       - run: lein deps
 
@@ -45,8 +44,7 @@ jobs:
 
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "project.clj" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "project.clj" }}
 
       - run: lein test
 
@@ -60,8 +58,7 @@ jobs:
 
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "project.clj" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "project.clj" }}
 
       - run: lein cloverage
 
@@ -75,8 +72,7 @@ jobs:
 
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "project.clj" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "project.clj" }}
 
       - setup_remote_docker:
           docker_layer_caching: true
