@@ -1,24 +1,30 @@
 box: clojure:lein-2.8.1
+
 build:
     # Steps make up the actions in your pipeline
     # Read more about steps on our dev center:
     # http://devcenter.wercker.com/docs/steps/index.html
   steps:
     - script:
-        name: Build and test
+        name: build and test
         code: |
           lein test
 
     - script:
-        name: Build uberjar
+        name: build uberjar
         code: |
           lein uberjar
 
 deploy:
   steps:
+    - internal/docker-build:
+        dockerfile: Dockerfile
+        image-name: ci-test-clj
+
     - internal/docker-push:
         username: ${DOCKER_USER}
         password: ${DOCKER_PASSWD}
+        image-name: ci-test-clj
         repository: magthe/ci-test-clj
-        tag: w-${WERCKER_GIT_BRANCH}, w-${WERCKER_GIT_BRANCH}-${WERCKER_RUN_ID}
+        tag: wercker-${WERCKER_GIT_BRANCH}, wercker-${WERCKER_GIT_BRANCH}-${WERCKER_RUN_ID}
         cmd: java -jar ./target/ci-test-clj-0.1.0-SNAPSHOT-standalone.jar
