@@ -1,0 +1,31 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: inspect
+    image: clojure:lein-2.9.1
+    commands:
+      - env
+      - pwd
+      - ls -l
+
+  - name: test
+    image: clojure:lein-2.9.1
+    commands:
+      - lein test
+
+  - name: cloverage
+    image: clojure:lein-2.9.1
+    commands:
+      - lein cloverage
+
+  - name: dockerhub
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: magthe/ci-test-clj
+      tags:
+        - 'drone-latest'
