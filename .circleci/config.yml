@@ -80,6 +80,7 @@ jobs:
       - run:
           name: Build Docker image
           command: |
+              lein uberjar
               docker build -t magthe/ci-test-clj:circle-${CIRCLE_BRANCH} .
               docker tag magthe/ci-test-clj:circle-${CIRCLE_BRANCH} magthe/ci-test-clj:circle-${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}
               docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWD}

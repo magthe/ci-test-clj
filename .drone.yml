@@ -19,6 +19,11 @@ steps:
     commands:
       - lein cloverage
 
+  - name: JAR
+    image: clojure:lein-2.9.1
+    commands:
+      - lein uberjar
+
   - name: dockerhub
     image: plugins/docker
     settings:
